@@ -4,88 +4,63 @@ import java.util.Arrays;
 
 public class MergeSort {
 
-    void merge(int arr[], int l, int m, int r) {
-        // Find sizes of two subarrays to be merged
-        int n1 = m - l + 1;
-        int n2 = r - m;
+    public static void main(String[] args) {
 
-        /* Create temp arrays */
-        int L[] = new int[n1];
-        int R[] = new int[n2];
+        int[] array = {12, 11, 13, 5, 6, 7};
+        System.out.println("Given : { " +Arrays.toString(array) +" }");
+        mergeSort(array, 0, array.length -1);
+        System.out.println("Sorted : { " +Arrays.toString(array) +" }");
+    }
 
-        /*Copy data to temp arrays*/
-        for (int i = 0; i < n1; ++i)
-            L[i] = arr[l + i];
-        for (int j = 0; j < n2; ++j)
-            R[j] = arr[m + 1 + j];
+    public static void mergeSort(int[] array, int startIndex, int endIndex) {
+        if (startIndex < endIndex) {
+            int midIndex = (endIndex + startIndex )/ 2;
+            mergeSort(array, startIndex, midIndex);
+            mergeSort(array, midIndex + 1, endIndex);
+            merge(array, startIndex, midIndex, endIndex);
+        }
+    }
 
-        /* Merge the temp arrays */
+    private static void merge(int[] array, int startIndex, int midIndex, int endIndex) {
 
-        // Initial indexes of first and second subarrays
-        int i = 0, j = 0;
+        int i = startIndex;
+        int j = midIndex + 1;
+        int k = 0;
 
-        // Initial index of merged subarray array
-        int k = l;
-        while (i < n1 && j < n2) {
-            if (L[i] <= R[j]) {
-                arr[k] = L[i];
+        //create temp array
+        int[] tempArray = new int[endIndex - startIndex + 1];
+
+        // compare both array and merge
+        while (i <= midIndex && j <= endIndex) {
+            if (array[i] < array[j]) {
+                tempArray[k] = array[i];
                 i++;
             } else {
-                arr[k] = R[j];
+                tempArray[k] = array[j];
                 j++;
             }
             k++;
         }
 
-        /* Copy remaining elements of L[] if any */
-        while (i < n1) {
-            arr[k] = L[i];
-            i++;
-            k++;
+        // marge remaining elements
+        if (i > midIndex) {
+            while (j <= endIndex) {
+                tempArray[k] = array[j];
+                k++;
+                j++;
+            }
+        } else {
+            while (i <= midIndex) {
+                tempArray[k] = array[i];
+                k++;
+                i++;
+            }
         }
 
-        /* Copy remaining elements of R[] if any */
-        while (j < n2) {
-            arr[k] = R[j];
-            j++;
-            k++;
+        //copy temp in to main array
+        for (int l = 0; l < tempArray.length; l++) {
+            array[startIndex] = tempArray[l];
+            startIndex++;
         }
-    }
-
-    // Main function that sorts arr[l..r] using
-    // merge()
-    void sort(int arr[], int l, int r) {
-        if (l < r) {
-            // Find the middle point
-            int m = l + (r - l) / 2;
-
-            // Sort first and second halves
-            sort(arr, l, m);
-            sort(arr, m + 1, r);
-
-            // Merge the sorted halves
-            merge(arr, l, m, r);
-        }
-    }
-
-    static void printArray(int arr[]) {
-        int n = arr.length;
-        for (int i = 0; i < n; ++i)
-            System.out.print(arr[i] + " ");
-        System.out.println();
-    }
-
-    // Driver code
-    public static void main(String args[]) {
-        int arr[] = {12, 11, 13, 5, 6, 7};
-
-        System.out.println("Given Array");
-        printArray(arr);
-
-        MergeSort ob = new MergeSort();
-        ob.sort(arr, 0, arr.length - 1);
-
-        System.out.println("\nSorted array");
-        printArray(arr);
     }
 }
